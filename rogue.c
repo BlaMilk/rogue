@@ -5,8 +5,8 @@
 #include<conio.h>
 
 //define
-#define DispArea 11	//表示領域(display area)をn*nサイズにする
-
+#define DispArea 15	//表示領域(display area)をn*nサイズにする
+#define radius (DispArea-1)/2
 //座標の構造体
 struct xy{
 	int x;
@@ -14,7 +14,7 @@ struct xy{
 }man;
 
 //グローバル変数宣言
-int field[100][100]={};
+int field[200][200]={};
 
 //関数宣言
 void output(),SetMan();
@@ -58,9 +58,9 @@ void output(),SetMan();
 			fscanf(fi,"%s",read);
 			for(j=0;j<strlen(read);j++){
 				if('1'<=read[j] && read[j]<='9')
-					field[j+5][i+5]=(int)read[j]-'0';
+					field[j+radius][i+radius]=(int)read[j]-'0';
 				else 
-					field[j+5][i+5]=0;
+					field[j+radius][i+radius]=0;
 			}
 		}
 		return line;
@@ -80,30 +80,30 @@ void output(),SetMan();
 //主人公周辺のマップを端末出力
 	void output(){
 		int i,j;
-		int area=(DispArea-1)/2;	//表示領域を変更可能
-
-		printf("x=%d Y=%d\n\n",man.x,man.y);
-
-		for(j=0;j<5;j++){
-			for(i=0;i<11;i++){
-				figure(field[man.x-area+i][man.y-area+j]);
+		printf("************************\n");
+		printf("* 　座標　 : x=%d Y=%d *\n",man.x,man.y);
+		printf("* 出力領域 :  %2d×%2d   *\n",DispArea,DispArea);
+		printf("************************\n\n");
+		for(j=0;j<radius;j++){
+			for(i=0;i<DispArea;i++){
+				figure(field[man.x-radius+i][man.y-radius+j]);
 			}
 			printf("\n");
 		}
 
-		for(i=0;i<5;i++)
-			figure(field[man.x-area+i][man.y]);
+		for(i=0;i<radius;i++)
+			figure(field[man.x-radius+i][man.y]);
 
 		printf("☆");	//主人公
 
-		for(i=6;i<11;i++)
-			figure(field[man.x-area+i][man.y]);
+		for(i=radius+1;i<DispArea;i++)
+			figure(field[man.x-radius+i][man.y]);
 
 		printf("\n");
 			
-		for(j=6;j<11;j++){
-			for(i=0;i<11;i++){
-				figure(field[man.x-area+i][man.y-area+j]);
+		for(j=radius+1;j<DispArea;j++){
+			for(i=0;i<DispArea;i++){
+				figure(field[man.x-radius+i][man.y-radius+j]);
 			}
 			printf("\n");
 		}
