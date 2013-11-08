@@ -1,17 +1,26 @@
+//ƒwƒbƒ_ƒtƒ@ƒCƒ‹
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include<conio.h>
 
+//define
+#define DispArea 11	//•\¦—Ìˆæ(display area)‚ğn*nƒTƒCƒY‚É‚·‚é
+
+//À•W‚Ì\‘¢‘Ì
 struct xy{
 	int x;
 	int y;
 }man;
 
+//ƒOƒ[ƒoƒ‹•Ï”éŒ¾
 int field[100][100]={};
+
+//ŠÖ”éŒ¾
 void output(),SetMan();
 
 
+//ƒƒCƒ“ŠÖ”
 	int main(){
 		char read[100];
 		int i,j;
@@ -19,8 +28,8 @@ void output(),SetMan();
 
 		srand((unsigned int)time(NULL));
 		line=GetField();
-		SetMan();
 
+		SetMan();
 		while(1){
 			system("cls");
 			output();
@@ -35,6 +44,7 @@ void output(),SetMan();
 /***********************************Function***********************************/
 
 //GetField
+//ufield.txtv‚©‚çƒtƒB[ƒ‹ƒhƒf[ƒ^‚ğufield[x][y]v‚ÉŠi”[‚·‚é
 	int GetField(){
 		FILE *fi;
 		char read[100];
@@ -44,78 +54,106 @@ void output(),SetMan();
 		fi=fopen("field.txt","r");
 
 		fscanf(fi,"%d",&line);
-
 		for(i=0;i<line;i++){
 			fscanf(fi,"%s",read);
-			for(j=0;j<strlen(read);j++)
-				field[j+5][i+5]=atoi(read[j]);
+			for(j=0;j<strlen(read);j++){
+				if('1'<=read[j] && read[j]<='9')
+					field[j+5][i+5]=(int)read[j]-'0';
+				else 
+					field[j+5][i+5]=0;
+			}
 		}
 		return line;
 	}
 
 //SetMan
+//—”‚ÅålŒö‚ÌƒXƒ^[ƒgˆÊ’u‚ğŒˆ‚ß‚é
 	void SetMan(){
 		do{
-			man.x=rand()%100;
-			man.y=rand()%100;
+			man.x=rand()%95+5;
+			man.y=rand()%95+5;
 		}while(field[man.x][man.y]==0);
+		printf("ålŒö‚ÌˆÊ’u‚Íx=%d,y=%d‚Å‚·\n",man.x,man.y);
 	}
 
 //output
+//ålŒöü•Ó‚Ìƒ}ƒbƒv‚ğ’[––o—Í
 	void output(){
 		int i,j;
+		int area=(DispArea-1)/2;	//•\¦—Ìˆæ‚ğ•ÏX‰Â”\
+
+		printf("x=%d Y=%d\n\n",man.x,man.y);
 
 		for(j=0;j<5;j++){
-			for(i=0;i<11;j++){
-				printf("%c",field[man.x-5+j][man.y-5+j]);
+			for(i=0;i<11;i++){
+				figure(field[man.x-area+i][man.y-area+j]);
 			}
+			printf("\n");
 		}
 
 		for(i=0;i<5;i++)
-			printf("%c",field[man.x-5+j][man.y]);
+			figure(field[man.x-area+i][man.y]);
+
+		printf("™");	//ålŒö
+
+		for(i=6;i<11;i++)
+			figure(field[man.x-area+i][man.y]);
+
+		printf("\n");
 			
 		for(j=6;j<11;j++){
-			for(i=0;i<11;j++){
-				printf("%c",field[man.x-5+j][man.y-5+j]);
+			for(i=0;i<11;i++){
+				figure(field[man.x-area+i][man.y-area+j]);
 			}
+			printf("\n");
 		}
 	}
 
 //move
+//ƒL[ƒ{[ƒh‚©‚ç‚Ì“ü—Í‚É‚æ‚èålŒö‚ÌˆÊ’u‚ğˆÚ“®‚³‚¹‚é
 	int move(){
-		char input[5];
+		char input;
 
 		while(1){
 			if(kbhit()){
-				sprintf(input,"%s",getch());
-				if(strcmp(input,'æ½¼')==0 || strcmp(input,'d')==0){
+				input=getch();
+				if(input=='d' && field[man.x+1][man.y]!=0){
 					man.x++;
 					break;
 				}
-				else if(strcmp(input,'æ½­')==0 || strcmp(input,'a')==0){
+				else if(input=='a' && field[man.x-1][man.y]!=0){
 					man.x--;
 					break;
 				}
-				else if(strcmp(input,'æ¾‘')==0 || strcmp(input,'s')==0){
+				else if(input=='s' && field[man.x][man.y+1]!=0){
 					man.y++;
 					break;
 				}
-				else if(strcmp(input,'æ½¯')==0 || strcmp(input,'w')==0){
+				else if(input=='w' && field[man.x][man.y-1]!=0){
 					man.y--;
 					break;
 				}
+				else if(input=='e')exit(0);
 			}
 		}
-
-
-
-
-
-
-
-/*	int CheckStatus(int x,int y){
-		if(strcmp(field[x][y],'0')==0)		return 0;
-		else if(strcmp(field[x][y],'1')==0)	return 1;
-		return -1;
 	}
-*/
+
+//figure
+//”š‚É‘Î‰‚µ‚½}Œ`‚ğo—Í‚·‚é
+	int figure(int n){
+		if(n==0)printf("¡");
+		else if(n==1)printf("@");
+	}
+
+//ShowField
+//Œ»İ‚Ìƒ}ƒbƒv‘S‘Ì‚ğo—Í‚·‚é ƒfƒoƒbƒO—p
+	void ShowField(){
+		int i,j;
+		for(i=0;i<100;i++){
+			for(j=0;j<100;j++)
+				figure(field[i][j]);
+				printf("\n");
+		}
+	}
+
+
