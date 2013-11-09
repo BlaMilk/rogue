@@ -5,8 +5,11 @@
 #include<conio.h>
 
 //define
-#define DispArea 15	//表示領域(display area)をn*nサイズにする
-#define radius (DispArea-1)/2
+#define DispAreax 16
+#define DispAreay 9	//表示領域(display area)をx*yサイズにする
+#define radiusx (DispAreax-1)/2
+#define radiusy (DispAreay-1)/2
+
 //座標の構造体
 struct xy{
 	int x;
@@ -58,9 +61,9 @@ void output(),SetMan();
 			fscanf(fi,"%s",read);
 			for(j=0;j<strlen(read);j++){
 				if('1'<=read[j] && read[j]<='9')
-					field[j+radius][i+radius]=(int)read[j]-'0';
+					field[j+radiusx][i+radiusy]=(int)read[j]-'0';
 				else 
-					field[j+radius][i+radius]=0;
+					field[j+radiusx][i+radiusy]=0;
 			}
 		}
 		return line;
@@ -73,40 +76,29 @@ void output(),SetMan();
 			man.x=rand()%95+5;
 			man.y=rand()%95+5;
 		}while(field[man.x][man.y]==0);
-		printf("主人公の位置はx=%d,y=%dです\n",man.x,man.y);
 	}
 
 //output
 //主人公周辺のマップを端末出力
 	void output(){
+		int center;	//主人公位置のデータを保管
 		int i,j;
-		printf("************************\n");
-		printf("* 　座標　 : x=%d Y=%d *\n",man.x,man.y);
-		printf("* 出力領域 :  %2d×%2d   *\n",DispArea,DispArea);
-		printf("************************\n\n");
-		for(j=0;j<radius;j++){
-			for(i=0;i<DispArea;i++){
-				figure(field[man.x-radius+i][man.y-radius+j]);
-			}
-			printf("\n");
-		}
+		printf(" *   *   *   *   *   *   *\n");
+		printf(" * 　座標　 : x=%2d Y=%2d  *\n",man.x,man.y);
+		printf(" * 表\示領域 :   %2d×%2d   * \n",DispAreax,DispAreay);
+		printf(" *   *   *   *   *   *   * \n\n");
 
-		for(i=0;i<radius;i++)
-			figure(field[man.x-radius+i][man.y]);
-
-		printf("☆");	//主人公
-
-		for(i=radius+1;i<DispArea;i++)
-			figure(field[man.x-radius+i][man.y]);
-
-		printf("\n");
+		center=field[man.x][man.y];
+		field[man.x][man.y]=9;
 			
-		for(j=radius+1;j<DispArea;j++){
-			for(i=0;i<DispArea;i++){
-				figure(field[man.x-radius+i][man.y-radius+j]);
+		for(j=0;j<DispAreay;j++){
+			for(i=0;i<DispAreax;i++){
+				figure(field[man.x-radiusx+i][man.y-radiusy+j]);
 			}
 			printf("\n");
 		}
+
+		field[man.x][man.y]=center;	//☆に置き換えたデータを下に戻す
 	}
 
 //move
@@ -117,7 +109,7 @@ void output(),SetMan();
 		while(1){
 			if(kbhit()){
 				input=getch();
-				if(input=='d' && field[man.x+1][man.y]!=0){
+				if(input=='d'&& field[man.x+1][man.y]!=0){
 					man.x++;
 					break;
 				}
@@ -141,8 +133,9 @@ void output(),SetMan();
 //figure
 //数字に対応した図形を出力する
 	int figure(int n){
-		if(n==0)printf("■");
+		if(n==0)printf("□");
 		else if(n==1)printf("　");
+		else if(n==9)printf("☆");
 	}
 
 //ShowField
